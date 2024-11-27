@@ -36,6 +36,33 @@ void listarPacientes() {
         paciente.mostrarInformacion();
         std::cout << "-------------------------\n";
     }
+
+    void eliminarPaciente() {
+        if (listaPacientes.empty()) {
+            std::cout << "No hay pacientes registrados.\n";
+            return;
+        }
+
+        std::string identificacion;
+        std::cout << "Ingrese la identificación del paciente a eliminar: ";
+        std::getline(std::cin, identificacion);
+
+        // Buscar al paciente por identificación
+        auto it = std::find_if(listaPacientes.begin(), listaPacientes.end(),
+            [&identificacion](const Paciente& p) {
+                return p.getIdentificacion() == identificacion;
+            });
+
+        if (it != listaPacientes.end()) {
+            // Eliminar paciente del vector
+            listaPacientes.erase(it);
+            std::cout << "Paciente eliminado con éxito.\n";
+        }
+        else {
+            std::cout << "No se encontró un paciente con esa identificación.\n";
+        }
+    }
+
 }
 
 // submenu para gestionar los pacientes
@@ -44,7 +71,7 @@ void menuPacientes() {
     do {
         std::cout << "\nGestion de Pacientes\n";
         std::cout << "1. Registrar paciente\n";
-        std::cout << "2. Listar pacientes\n";
+        std::cout << "2. ver pacientes\n";
         std::cout << "3. Volver al menú principal\n";
         std::cout << "Ingrese una opcion: ";
         std::cin >> opcion;
@@ -58,10 +85,10 @@ void menuPacientes() {
             listarPacientes();
             break;
         case 3:
-            std::cout << "Volviendo al menú principal...\n";
+            std::cout << "Volviendo al menu principal...\n";
             break;
         default:
-            std::cout << "Opción no válida. Intente de nuevo.\n";
+            std::cout << "Opción no valida. Intente de nuevo.\n";
         }
     } while (opcion != 3);
 }
@@ -84,16 +111,16 @@ void menuPrincipal() {
             menuPacientes();  // aqui llamo al submenu de pacientes
             break;
         case 2:
-            std::cout << "Gestión de Médicos está en desarrollo.\n";
+            std::cout << "Gestion de Medicos esta en desarrollo.\n";
             break;
         case 3:
-            std::cout << "Gestión de Citas Médicas está en desarrollo.\n";
+            std::cout << "Gestion de Citas Meicas esta en desarrollo.\n";
             break;
         case 4:
             std::cout << "Saliendo del programa...\n";
             break;
         default:
-            std::cout << "Opción no válida. Intente de nuevo.\n";
+            std::cout << "Opcion no valida. Intente de nuevo.\n";
         }
     } while (opcion != 4);
 }
