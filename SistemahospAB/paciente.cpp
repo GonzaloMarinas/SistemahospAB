@@ -24,7 +24,7 @@ std::string paciente::getFechaIngreso() const {
 // muestro la informacion completa del paciente
 void paciente::mostrarInformacion() const {
     std::cout << "Nombre: " << nombre << std::endl;
-    std::cout << "Identificación: " << identificacion << std::endl;
+    std::cout << "Identificacion: " << identificacion << std::endl;
     std::cout << "Fecha de Ingreso: " << fechaIngreso << std::endl;
 }
 
@@ -32,12 +32,12 @@ void paciente::mostrarInformacion() const {
 bool paciente::tieneIdentificacion(const std::string& id) const {
     return identificacion == id;
 }
-// Método para agregar algo al historial clinico
+// metodo para agregar algo al historial clinico
 void paciente::agregarEntradaHistorial(const std::string& entrada) {
     historialClinico.push_back(entrada); // Añadimos la entrada al historial
 }
 
-// Método para mostrar todo el historial clínico
+// metodo para mostrar todo el historial clínico
 void paciente::mostrarHistorialClinico() const {
     if (historialClinico.empty()) {
         std::cout << "Este paciente no tiene historial clinico.\n";
