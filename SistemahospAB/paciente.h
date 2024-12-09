@@ -1,8 +1,9 @@
-// Paciente.h
 #ifndef PACIENTE_H
 #define PACIENTE_H
 
 #include <string>
+#include <iostream>
+#include <vector>
 
 class paciente {
 private:
@@ -11,16 +12,22 @@ private:
     std::string fechaIngreso;
 
 public:
-    // Constructor
     paciente(std::string nombre, std::string identificacion, std::string fechaIngreso);
 
-    // Métodos para obtener información
+    void mostrarInformacion() const;
+
+    void agregarEntradaHistorial(const std::string& entrada); // Para agregar una entrada al historial
+    void mostrarHistorialClinico() const; // Para mostrar todo el historial clínico
+
+
+    // Getters para obtener los datos
     std::string getNombre() const;
     std::string getIdentificacion() const;
     std::string getFechaIngreso() const;
+    std::vector<std::string> historialClinico;
 
-    // Método para mostrar la información del paciente
-    void mostrarInformacion() const;
+    // Método para verificar si el ID coincide
+    bool tieneIdentificacion(const std::string& id) const;
 };
 
 #endif

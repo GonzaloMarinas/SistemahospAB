@@ -1,15 +1,16 @@
-﻿# CMakeList.txt: archivo del proyecto de CMake de nivel superior, establezca la configuración global
-# e incluya los subproyectos aquí.
-#
-cmake_minimum_required (VERSION 3.8)
+﻿cmake_minimum_required(VERSION 3.8)
 
-# Habilite Recarga activa para los compiladores de MSVC si se admiten.
+# Habilitar recarga activa para compiladores MSVC si es necesario
 if (POLICY CMP0141)
   cmake_policy(SET CMP0141 NEW)
   set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<IF:$<AND:$<C_COMPILER_ID:MSVC>,$<CXX_COMPILER_ID:MSVC>>,$<$<CONFIG:Debug,RelWithDebInfo>:EditAndContinue>,$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>>")
 endif()
 
-project ("SistemahospAB")
+# Definir el nombre del proyecto
+project("SistemahospAB")
 
-# Incluya los subproyectos.
-add_subdirectory ("SistemahospAB")
+# Establecer el estándar C++
+set(CMAKE_CXX_STANDARD 11)
+
+# Agregar la subcarpeta donde está tu código fuente
+add_subdirectory(SistemahospAB)
