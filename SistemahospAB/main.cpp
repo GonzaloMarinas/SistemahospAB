@@ -1,9 +1,9 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <fstream>   // Para poder manejar archivos
-#include <algorithm> // Necesario para std::transform
-#include <cctype>    // Necesario para std::tolower
+#include <fstream>   //esto lo necesito para poder trabajar con archivos
+#include <algorithm> // lo necesito si quiero usar  std::transform
+#include <cctype>    // lo mismo para std::tolower
 #include "paciente.h"
 
 // con este vector lo que voy a hacer es almacenar los pacientes registrados
@@ -20,7 +20,7 @@ std::string toLowerCase(const std::string& str) {
 void guardarDatos() {
     std::ofstream archivo("pacientes.txt");
     if (!archivo) {
-        std::cerr << "Error al abrir el archivo para guardar los datos.\n";
+        std::cerr << "error al abrir el archivo para guardar los datos.\n";
         return;
     }
 
@@ -31,7 +31,7 @@ void guardarDatos() {
     std::cout << "Datos guardados correctamente.\n";
 }
 
-// función para cargar datos desde un archivo
+// función para cargar datos desde un archivo y que los pueda leer
 void cargarDatos() {
     std::ifstream archivo("pacientes.txt");
     if (!archivo) {
@@ -220,7 +220,7 @@ void menuPacientes() {
 
 // aquí voy a hacer el menú principal
 void menuPrincipal() {
-    cargarDatos(); // Cargar datos al iniciar el programa
+    cargarDatos(); // esto va a cargar los datos al iniciar el programa
 
     int opcion;
     do {
@@ -245,7 +245,7 @@ void menuPrincipal() {
             break;
         case 4:
             std::cout << "Saliendo del programa...\n";
-            guardarDatos(); // Guardar datos al salir
+            guardarDatos(); // esto va a guardar los datos al salir del programa
             break;
         default:
             std::cout << "Opcion no valida. Intente de nuevo.\n";

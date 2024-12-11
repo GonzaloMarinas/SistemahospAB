@@ -16,17 +16,17 @@ public:
 
     void mostrarInformacion() const;
 
-    void agregarEntradaHistorial(const std::string& entrada); // Para agregar una entrada al historial
-    void mostrarHistorialClinico() const; // Para mostrar todo el historial clínico
+    void agregarEntradaHistorial(const std::string& entrada); // para añadir una entrada al historial
+    void mostrarHistorialClinico() const; // y esto para mostrar todo el historial clínico
 
 
-    // Getters para obtener los datos
+    // utilizo getters para poder obtener los datos
     std::string getNombre() const;
     std::string getIdentificacion() const;
     std::string getFechaIngreso() const;
     std::vector<std::string> historialClinico;
 
-    // Método para verificar si el ID coincide
+    // voy a utilizar este metodo para verificar si el ID coincide o no
     bool tieneIdentificacion(const std::string& id) const;
 };
 
