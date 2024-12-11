@@ -20,13 +20,26 @@ std::string toLowerCase(const std::string& str) {
 void guardarDatos() {
     std::ofstream archivo("pacientes.txt");
     if (!archivo) {
-        std::cerr << "error al abrir el archivo para guardar los datos.\n";
+        std::cerr << "Error al abrir el archivo para guardar los datos.\n";
         return;
     }
 
     for (const auto& p : listaPacientes) {
-        archivo << p.getNombre() << "|" << p.getIdentificacion() << "|" << p.getFechaIngreso() << "\n";
+        archivo << p.getNombre() << "|" << p.getIdentificacion() << "|" << p.getFechaIngreso();
+
+        // con esto voy añadir al archivo el historial clínico separado por el caracter '~'
+        if (!p.historialClinico.empty()) {
+            archivo << "|";
+            for (size_t i = 0; i < p.historialClinico.size(); ++i) {
+                archivo << p.historialClinico[i];
+                if (i != p.historialClinico.size() - 1) {
+                    archivo << "~"; // Separador de entradas del historial
+                }
+            }
+        }
+        archivo << "\n";
     }
+
     archivo.close();
     std::cout << "Datos guardados correctamente.\n";
 }
@@ -38,17 +51,35 @@ void cargarDatos() {
         std::cerr << "No se encontro un archivo de datos. Se creara uno nuevo al guardar.\n";
         return;
     }
-
+// aqui los tres primeros campos q son nombre, ID y fecha, los obtengo usandos las posiciones de '|' que en su caso la pos1 
+// me va a decir el nombre la pos2 el ID y asi
     std::string linea;
     while (std::getline(archivo, linea)) {
         size_t pos1 = linea.find('|');
         size_t pos2 = linea.find('|', pos1 + 1);
+        size_t pos3 = linea.find('|', pos2 + 1);
+
         if (pos1 != std::string::npos && pos2 != std::string::npos) {
             std::string nombre = linea.substr(0, pos1);
             std::string identificacion = linea.substr(pos1 + 1, pos2 - pos1 - 1);
-            std::string fechaIngreso = linea.substr(pos2 + 1);
+            std::string fechaIngreso = linea.substr(pos2 + 1, (pos3 != std::string::npos) ? pos3 - pos2 - 1 : std::string::npos);
 
             paciente nuevoPaciente(nombre, identificacion, fechaIngreso);
+
+            // Cargar historial clínico si existe
+            if (pos3 != std::string::npos) {
+                std::string historial = linea.substr(pos3 + 1);
+                size_t inicio = 0, fin;
+                while ((fin = historial.find('~', inicio)) != std::string::npos) {
+                    nuevoPaciente.agregarEntradaHistorial(historial.substr(inicio, fin - inicio));
+                    inicio = fin + 1;
+                }
+                // Añadir la última entrada si existe
+                if (inicio < historial.size()) {
+                    nuevoPaciente.agregarEntradaHistorial(historial.substr(inicio));
+                }
+            }
+
             listaPacientes.push_back(nuevoPaciente);
         }
     }
