@@ -5,9 +5,14 @@
 #include <algorithm> // lo necesito si quiero usar  std::transform
 #include <cctype>    // lo mismo para std::tolower
 #include "paciente.h"
+#include "medico.h"
 
 // con este vector lo que voy a hacer es almacenar los pacientes registrados
 std::vector<paciente> listaPacientes;
+
+
+// Vector para almacenar los médicos registrados
+std::vector<Medico> listaMedicos;
 
 // esta función me va a servir para que cuando busque un paciente por su nombre si está por ejemplo en mayúsculas que no se equivoque al igual que si está en minúsculas
 std::string toLowerCase(const std::string& str) {
@@ -15,7 +20,7 @@ std::string toLowerCase(const std::string& str) {
     std::transform(lowerStr.begin(), lowerStr.end(), lowerStr.begin(), [](unsigned char c) { return std::tolower(c); });
     return lowerStr;
 }
-
+// ------GESTION DE ARCHIVOS DE PACIENTES-------
 // función para guardar datos en un archivo txt
 void guardarDatos() {
     std::ofstream archivo("pacientes.txt");
@@ -85,6 +90,48 @@ void cargarDatos() {
     }
     archivo.close();
     std::cout << "Datos encontrados correctamente.\n";
+}
+
+// --------GESTION DE ARCHIVOS DE MEDICOS---------
+
+void guardarDatosMedicos() {
+    std::ofstream archivo("medicos.txt");
+    if (!archivo) {
+        std::cerr << "Error al abrir el archivo para guardar los datos de medicos.\n";
+        return;
+    }
+
+    for (const auto& m : listaMedicos) {
+        archivo << m.getNombre() << "|" << m.getIdentificacionProfesional() << "|" << m.getEspecialidad() << "\n";
+    }
+
+    archivo.close();
+    std::cout << "Datos de medicos guardados correctamente.\n";
+}
+
+void cargarDatosMedicos() {
+    std::ifstream archivo("medicos.txt");
+    if (!archivo) {
+        std::cerr << "No se encontro un archivo de datos de medicos. Se creara uno nuevo al guardar.\n";
+        return;
+    }
+
+    std::string linea;
+    while (std::getline(archivo, linea)) {
+        size_t pos1 = linea.find('|');
+        size_t pos2 = linea.find('|', pos1 + 1);
+
+        if (pos1 != std::string::npos && pos2 != std::string::npos) {
+            std::string nombre = linea.substr(0, pos1);
+            std::string identificacion = linea.substr(pos1 + 1, pos2 - pos1 - 1);
+            std::string especialidad = linea.substr(pos2 + 1);
+
+            Medico nuevoMedico(nombre, identificacion, especialidad);
+            listaMedicos.push_back(nuevoMedico);
+        }
+    }
+    archivo.close();
+    std::cout << "Datos de medicos cargados correctamente.\n";
 }
 
 // esta función me va a servir para registrar a un paciente
@@ -249,15 +296,156 @@ void menuPacientes() {
     } while (opcion != 5);
 }
 
+
+// VER, REGISTRAR, ELIMINAR Y BUSCAR MEDICOS
+
+void registrarMedico() {
+    std::string nombre, identificacion, especialidad;
+
+    do {
+        std::cout << "Ingrese el nombre del medico: ";
+        std::getline(std::cin, nombre);
+        if (nombre.empty()) {
+            std::cout << "El nombre no puede estar vacio. Intente de nuevo.\n";
+        }
+    } while (nombre.empty());
+
+    do {
+        std::cout << "Ingrese la identificacion profesional del medico: ";
+        std::getline(std::cin, identificacion);
+        if (identificacion.empty()) {
+            std::cout << "La identificacion no puede estar vacia. Intente de nuevo.\n";
+        }
+    } while (identificacion.empty());
+
+    do {
+        std::cout << "Ingrese la especialidad del medico: ";
+        std::getline(std::cin, especialidad);
+        if (especialidad.empty()) {
+            std::cout << "La especialidad no puede estar vacia. Intente de nuevo.\n";
+        }
+    } while (especialidad.empty());
+
+    Medico nuevoMedico(nombre, identificacion, especialidad);
+    listaMedicos.push_back(nuevoMedico);
+    std::cout << "Medico registrado con exito.\n";
+}
+
+void verMedicos() {
+    if (listaMedicos.empty()) {
+        std::cout << "No hay medicos registrados.\n";
+        return;
+    }
+
+    std::cout << "Lista de medicos:\n";
+    for (const auto& medico : listaMedicos) {
+        medico.mostrarInformacion();
+        std::cout << "-------------------------\n";
+    }
+}
+
+
+void buscarMedico() {
+    if (listaMedicos.empty()) {
+        std::cout << "No hay medicos registrados.\n";
+        return;
+    }
+
+    std::string identificacion;
+    std::cout << "Ingrese la identificacion profesional del medico a buscar: ";
+    std::getline(std::cin, identificacion);
+
+    auto it = std::find_if(listaMedicos.begin(), listaMedicos.end(),
+        [&identificacion](const Medico& m) {
+            return m.getIdentificacionProfesional() == identificacion;
+        });
+
+    if (it != listaMedicos.end()) {
+        std::cout << "Medico encontrado:\n";
+        it->mostrarInformacion();
+
+        // Opcionalmente, podrías permitir editar o eliminar desde aquí.
+    }
+    else {
+        std::cout << "No se encontro un medico con esa identificacion.\n";
+    }
+}
+
+
+void eliminarMedico() {
+    if (listaMedicos.empty()) {
+        std::cout << "No hay medicos registrados.\n";
+        return;
+    }
+
+    std::string identificacion;
+    std::cout << "Ingrese la identificacion profesional del medico a eliminar: ";
+    std::getline(std::cin, identificacion);
+
+    auto it = std::find_if(listaMedicos.begin(), listaMedicos.end(),
+        [&identificacion](const Medico& m) {
+            return m.getIdentificacionProfesional() == identificacion;
+        });
+
+    if (it != listaMedicos.end()) {
+        listaMedicos.erase(it);
+        std::cout << "Medico eliminado con exito.\n";
+    }
+    else {
+        std::cout << "No se encontro un medico con esa identificacion.\n";
+    }
+}
+
+
+// MENU MEDICOS
+
+void menuMedicos() {
+    int opcion;
+    do {
+        std::cout << "\nGestion de Medicos\n";
+        std::cout << "1. Registrar medico\n";
+        std::cout << "2. Ver medicos\n";
+        std::cout << "3. Buscar medico\n";
+        std::cout << "4. Eliminar medico\n";
+        std::cout << "5. Volver al menu principal\n";
+        std::cout << "Ingrese una opcion: ";
+        std::cin >> opcion;
+        std::cin.ignore();
+
+        switch (opcion) {
+        case 1:
+            registrarMedico();
+            break;
+        case 2:
+            verMedicos();
+            break;
+        case 3:
+            buscarMedico();
+            break;
+        case 4:
+            eliminarMedico();
+            break;
+        case 5:
+            std::cout << "Volviendo al menu principal...\n";
+            break;
+        default:
+            std::cout << "Opcion no valida. Intente de nuevo.\n";
+        }
+    } while (opcion != 5);
+}
+
+        
+
 // aquí voy a hacer el menú principal
 void menuPrincipal() {
     cargarDatos(); // esto va a cargar los datos al iniciar el programa
+    cargarDatosMedicos(); // esto va a cargar los datos de los medicos
 
     int opcion;
     do {
         std::cout << "\nSistema Hospitalario\n";
         std::cout << "1. Gestion de pacientes\n";
-        std::cout << "2. Gestion de medicos (Por implementar)\n";
+        std::cout << "2. Gestion de medicos\n";
         std::cout << "3. Gestion de citas medicas (Por implementar)\n";
         std::cout << "4. Salir\n";
         std::cout << "Ingrese una opcion: ";
@@ -269,7 +457,7 @@ void menuPrincipal() {
             menuPacientes();
             break;
         case 2:
-            std::cout << "Gestion de medicos esta en desarrollo.\n";
+            menuMedicos();
             break;
         case 3:
             std::cout << "Gestion de citas medicas está en desarrollo.\n";
@@ -277,6 +465,7 @@ void menuPrincipal() {
         case 4:
             std::cout << "Saliendo del programa...\n";
             guardarDatos(); // esto va a guardar los datos al salir del programa
+            guardarDatosMedicos(); //guardar los datos de los medicos
             break;
         default:
             std::cout << "Opcion no valida. Intente de nuevo.\n";

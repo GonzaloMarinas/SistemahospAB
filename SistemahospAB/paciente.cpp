@@ -25,7 +25,7 @@ std::string paciente::getFechaIngreso() const {
 void paciente::mostrarInformacion() const {
     std::cout << "Nombre: " << nombre << std::endl;
     std::cout << "Identificacion: " << identificacion << std::endl;
-    std::cout << "Fecha de Ingreso: " << fechaIngreso << std::endl;
+    std::cout << "Fecha de ingreso: " << fechaIngreso << std::endl;
 }
 
 // aqui voy a utilizar el metodo de clase, que me devuelva un valor tipo bool, y me va a servir para verificar si el ID coincide
