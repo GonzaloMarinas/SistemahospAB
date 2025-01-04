@@ -4,8 +4,8 @@
 #include <fstream>   //esto lo necesito para poder trabajar con archivos
 #include <algorithm> // lo necesito si quiero usar  std::transform
 #include <cctype>    // lo mismo para std::tolower
-#include "paciente.h"
-#include "medico.h"
+#include "paciente.h"// incluyo paciente
+#include "medico.h" // incluyo medico
 
 // con este vector lo que voy a hacer es almacenar los pacientes registrados
 std::vector<paciente> listaPacientes;
@@ -19,6 +19,11 @@ std::string toLowerCase(const std::string& str) {
     std::string lowerStr = str;
     std::transform(lowerStr.begin(), lowerStr.end(), lowerStr.begin(), [](unsigned char c) { return std::tolower(c); });
     return lowerStr;
+
+
+
+
+
 }
 // ------GESTION DE ARCHIVOS DE PACIENTES-------
 // función para guardar datos en un archivo txt
@@ -57,7 +62,7 @@ void cargarDatos() {
         return;
     }
 // aqui los tres primeros campos q son nombre, ID y fecha, los obtengo usandos las posiciones de '|' que en su caso la pos1 
-// me va a decir el nombre la pos2 el ID y asi
+// me va a decir el nombre la pos2 el ID y asi...
     std::string linea;
     while (std::getline(archivo, linea)) {
         size_t pos1 = linea.find('|');
@@ -91,6 +96,12 @@ void cargarDatos() {
     archivo.close();
     std::cout << "Datos encontrados correctamente.\n";
 }
+
+
+
+
+
+
 
 // --------GESTION DE ARCHIVOS DE MEDICOS---------
 
@@ -132,7 +143,26 @@ void cargarDatosMedicos() {
     }
     archivo.close();
     std::cout << "Datos de medicos cargados correctamente.\n";
+
+
+
+
+
+
+
 }
+// -----------GESTION DE ARCHIVO DE CITAS MÉDICAS---------
+
+
+
+
+
+
+
+
+
+
+
 
 // esta función me va a servir para registrar a un paciente
 void registrarPaciente() {
@@ -297,7 +327,7 @@ void menuPacientes() {
 }
 
 
-// VER, REGISTRAR, ELIMINAR Y BUSCAR MEDICOS
+// l..VER, REGISTRAR, ELIMINAR, BUSCAR Y EDITAR MEDICOS
 
 void registrarMedico() {
     std::string nombre, identificacion, especialidad;
@@ -397,6 +427,72 @@ void eliminarMedico() {
 }
 
 
+void editarMedico(std::vector<Medico>& medicos) {
+    std::string id;
+    std::cout << "Ingrese la identificacion del medico a editar: ";
+    std::cin >> id;
+
+
+    auto it = std::find_if(medicos.begin(), medicos.end(), [&](const Medico& medico) {
+        return medico.getIdentificacionProfesional() == id;
+        });
+
+    if (it != medicos.end()) {
+        Medico& medico = *it;
+
+        std::cout << "¿Que quires editar?\n";
+        std::cout << "1. Nombre\n";
+        std::cout << "2. Especialidad\n";
+        std::cout << "3. Estado (Activo/De baja)\n";
+        std::cout << "Selecciona una opcion: ";
+
+        int opcion;
+        std::cin >> opcion;
+
+        switch (opcion) {
+        case 1: {
+            std::string nuevoNombre;
+            std::cout << "Ingrese el nuevo nombre: ";
+            std::cin.ignore(); // Limpiar buffer
+            std::getline(std::cin, nuevoNombre);
+            medico.setNombre(nuevoNombre);
+            break;
+        }
+
+
+        case 2: {
+            std::string nuevaEspecialidad;
+            std::cout << "Ingrese la nueva especialidad: ";
+            std::cin.ignore(); // lo mismo para limpiar el buffer, para evitar errores
+            std::getline(std::cin, nuevaEspecialidad);
+            medico.setEspecialidad(nuevaEspecialidad);
+            break;
+        }
+
+
+
+        case 3: {
+            int nuevoEstado;
+            std::cout << "Ingrese el estado (1 para Activo, 0 para De baja): ";
+            std::cin >> nuevoEstado;
+            medico.setEstado(nuevoEstado == 1);
+            break;
+        }
+
+        default:
+            std::cout << "Opcion no valida.\n";
+        }
+
+        std::cout << "Medico actualizado correctamente.\n";
+    }
+    else {
+        std::cout << "Medico no encontrado.\n";
+    }
+}
+
+
+
+
 // MENU MEDICOS
 
 void menuMedicos() {
@@ -465,7 +561,7 @@ void menuPrincipal() {
         case 4:
             std::cout << "Saliendo del programa...\n";
             guardarDatos(); // esto va a guardar los datos al salir del programa
-            guardarDatosMedicos(); //guardar los datos de los medicos
+            guardarDatosMedicos(); //guardar los datos de los medicos en mi archivo txt de los medicos
             break;
         default:
             std::cout << "Opcion no valida. Intente de nuevo.\n";

@@ -1,3 +1,5 @@
+//paciente.h
+
 #ifndef PACIENTE_H
 #define PACIENTE_H
 
@@ -5,6 +7,8 @@
 #include <iostream>
 #include <vector>
 
+
+//clase paciente
 class paciente {
 private:
     std::string nombre;
