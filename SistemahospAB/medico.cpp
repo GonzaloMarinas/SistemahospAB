@@ -65,6 +65,14 @@ void Medico::setEstado(bool nuevoEstado) {
     estado = nuevoEstado;
 }
 
+void Medico::darDeBaja() {
+    estado = false; // esto me va a cambiar el estado a "De baja"
+}
+
+void Medico::activar() {
+    estado = true; // y este al estado a "Activo"
+}
+
 // Comprobar si tiene pacientes asignados
 bool Medico::tienePacientes() const {
     return !pacientesAsignados.empty();

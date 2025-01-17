@@ -32,6 +32,8 @@ public:
     void setNombre(const std::string nuevoNombre);
     void setEspecialidad(const std::string& nuevaEspecialidad);
     void setEstado(bool nuevoEstado);
+    void darDeBaja();
+    void activar();
 
     // Métodos adicionales
     bool tienePacientes() const; // Comprueba si tiene pacientes asignados

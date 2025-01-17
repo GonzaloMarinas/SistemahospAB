@@ -327,7 +327,7 @@ void menuPacientes() {
 }
 
 
-// l..VER, REGISTRAR, ELIMINAR, BUSCAR Y EDITAR MEDICOS
+// l..VER, REGISTRAR, ELIMINAR, BUSCAR Y Dar de baja... MEDICOS
 
 void registrarMedico() {
     std::string nombre, identificacion, especialidad;
@@ -427,66 +427,50 @@ void eliminarMedico() {
 }
 
 
-void editarMedico(std::vector<Medico>& medicos) {
+void gestionarEstadoMedico(std::vector<Medico>& listaMedicos) {
     std::string id;
-    std::cout << "Ingrese la identificacion del medico a editar: ";
+    std::cout << "Ingrese la identificacion del medico a modificar: ";
     std::cin >> id;
 
-
-    auto it = std::find_if(medicos.begin(), medicos.end(), [&](const Medico& medico) {
-        return medico.getIdentificacionProfesional() == id;
+    // Buscar el médico por su identificación
+    auto it = std::find_if(listaMedicos.begin(), listaMedicos.end(), [&](const Medico& m) {
+        return m.getIdentificacionProfesional() == id;
         });
 
-    if (it != medicos.end()) {
-        Medico& medico = *it;
-
-        std::cout << "¿Que quires editar?\n";
-        std::cout << "1. Nombre\n";
-        std::cout << "2. Especialidad\n";
-        std::cout << "3. Estado (Activo/De baja)\n";
-        std::cout << "Selecciona una opcion: ";
-
+    if (it != listaMedicos.end()) {
+        // Médico encontrado
+        std::cout << "Estado actual: " << (it->getEstado() ? "Activo" : "De baja") << "\n";
+        std::cout << "¿Que desea hacer?\n";
+        std::cout << "1. Dar de baja\n";
+        std::cout << "2. Activar\n";
         int opcion;
         std::cin >> opcion;
 
-        switch (opcion) {
-        case 1: {
-            std::string nuevoNombre;
-            std::cout << "Ingrese el nuevo nombre: ";
-            std::cin.ignore(); // Limpiar buffer
-            std::getline(std::cin, nuevoNombre);
-            medico.setNombre(nuevoNombre);
-            break;
+        if (opcion == 1) {
+            if (!it->getEstado()) {
+                std::cout << "El medico ya esta dado de baja.\n";
+            }
+            else {
+                it->darDeBaja();
+                std::cout << "El medico ha sido dado de baja.\n";
+            }
         }
-
-
-        case 2: {
-            std::string nuevaEspecialidad;
-            std::cout << "Ingrese la nueva especialidad: ";
-            std::cin.ignore(); // lo mismo para limpiar el buffer, para evitar errores
-            std::getline(std::cin, nuevaEspecialidad);
-            medico.setEspecialidad(nuevaEspecialidad);
-            break;
+        else if (opcion == 2) {
+            if (it->getEstado()) {
+                std::cout << "El medico ya esta activo.\n";
+            }
+            else {
+                it->activar();
+                std::cout << "El medico ha sido activado.\n";
+            }
         }
-
-
-
-        case 3: {
-            int nuevoEstado;
-            std::cout << "Ingrese el estado (1 para Activo, 0 para De baja): ";
-            std::cin >> nuevoEstado;
-            medico.setEstado(nuevoEstado == 1);
-            break;
+        else {
+            std::cout << "Opcion invalida.\n";
         }
-
-        default:
-            std::cout << "Opcion no valida.\n";
-        }
-
-        std::cout << "Medico actualizado correctamente.\n";
     }
     else {
-        std::cout << "Medico no encontrado.\n";
+        // Médico no encontrado
+        std::cout << "No se encontro un medico con esa identificacion.\n";
     }
 }
 
@@ -503,7 +487,8 @@ void menuMedicos() {
         std::cout << "2. Ver medicos\n";
         std::cout << "3. Buscar medico\n";
         std::cout << "4. Eliminar medico\n";
-        std::cout << "5. Volver al menu principal\n";
+        std::cout << "5. Dar de baja o activar medico\n";
+        std::cout << "6. Volver al menu principal\n";
         std::cout << "Ingrese una opcion: ";
         std::cin >> opcion;
         std::cin.ignore();
@@ -521,13 +506,17 @@ void menuMedicos() {
         case 4:
             eliminarMedico();
             break;
+
         case 5:
+            gestionarEstadoMedico(listaMedicos);
+            break;
+        case 6:
             std::cout << "Volviendo al menu principal...\n";
             break;
         default:
             std::cout << "Opcion no valida. Intente de nuevo.\n";
         }
-    } while (opcion != 5);
+    } while (opcion != 6);
 }
 
         
