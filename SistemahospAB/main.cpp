@@ -6,7 +6,8 @@
 #include <cctype>    // lo mismo para std::tolower
 #include "paciente.h"// incluyo paciente
 #include "medico.h" // incluyo medico
-#include "citaMedica.h" // incluyo ya las citas medicas
+#include "citaMedica.h" 
+#include "../../../../Desktop/2 año/APPLIED PROGRAMMING/SistemaHospitalarioAB/citaMedica.h"
 
 // con este vector lo que voy a hacer es almacenar los pacientes registrados
 std::vector<paciente> listaPacientes;
@@ -523,6 +524,142 @@ void menuMedicos() {
 // GESTIÓN DE CITAS MEDICAS 
 
 
+std::vector<CitaMedica> citasMedicas;
+
+void mostrarMenuCitas();
+void crearCita();
+void mostrarCitas();
+void modificarCita();
+void eliminarCita();
+
+int main() {
+    int opcion;
+
+    do {
+        mostrarMenuCitas();
+        std::cout << "Seleccione una opción: ";
+        std::cin >> opcion;
+        std::cin.ignore(); // Limpiar el buffer
+
+        switch (opcion) {
+        case 1:
+            crearCita();
+            break;
+        case 2:
+            mostrarCitas();
+            break;
+        case 3:
+            modificarCita();
+            break;
+        case 4:
+            eliminarCita();
+            break;
+        case 5:
+            std::cout << "Saliendo del menú de citas médicas...\n";
+            break;
+        default:
+            std::cout << "Opción inválida. Intente de nuevo.\n";
+        }
+    } while (opcion != 5);
+
+    return 0;
+}
+
+void mostrarMenuCitas() {
+    std::cout << "\n==== Menú de Citas Médicas ====" << std::endl;
+    std::cout << "1. Crear nueva cita" << std::endl;
+    std::cout << "2. Mostrar citas existentes" << std::endl;
+    std::cout << "3. Modificar una cita" << std::endl;
+    std::cout << "4. Eliminar una cita" << std::endl;
+    std::cout << "5. Salir" << std::endl;
+}
+
+void crearCita() {
+    std::string idPaciente, idMedico, especialidad, fecha, hora;
+    bool esUrgente;
+    int urgencia;
+
+    std::cout << "\n=== Crear nueva cita ===" << std::endl;
+    std::cout << "Ingrese ID del paciente: ";
+    std::getline(std::cin, idPaciente);
+    std::cout << "Ingrese ID del médico: ";
+    std::getline(std::cin, idMedico);
+    std::cout << "Ingrese la especialidad requerida: ";
+    std::getline(std::cin, especialidad);
+    std::cout << "Ingrese la fecha (YYYY-MM-DD): ";
+    std::getline(std::cin, fecha);
+    std::cout << "Ingrese la hora (HH:MM): ";
+    std::getline(std::cin, hora);
+    std::cout << "¿Es una cita urgente? (1 para Sí, 0 para No): ";
+    std::cin >> urgencia;
+    esUrgente = (urgencia == 1);
+    std::cin.ignore(); // Limpiar el buffer
+
+    CitaMedica nuevaCita(idPaciente, idMedico, especialidad, fecha, hora, esUrgente);
+    citasMedicas.push_back(nuevaCita);
+
+    std::cout << "Cita creada exitosamente.\n";
+}
+
+void mostrarCitas() {
+    std::cout << "\n=== Listado de Citas Médicas ===\n";
+    if (citasMedicas.empty()) {
+        std::cout << "No hay citas registradas.\n";
+        return;
+    }
+
+    for (const auto& cita : citasMedicas) {
+        cita.mostrarInformacion();
+        std::cout << "-------------------------\n";
+    }
+}
+
+void modificarCita() {
+    std::string idPaciente;
+    std::cout << "\n=== Modificar Cita Médica ===" << std::endl;
+    std::cout << "Ingrese el ID del paciente de la cita a modificar: ";
+    std::getline(std::cin, idPaciente);
+
+    for (auto& cita : citasMedicas) {
+        if (cita.getIdPaciente() == idPaciente) {
+            std::string nuevaFecha, nuevaHora;
+            bool nuevaUrgencia;
+            int urgencia;
+
+            std::cout << "Ingrese la nueva fecha (YYYY-MM-DD): ";
+            std::getline(std::cin, nuevaFecha);
+            std::cout << "Ingrese la nueva hora (HH:MM): ";
+            std::getline(std::cin, nuevaHora);
+            std::cout << "¿Es una cita urgente? (1 para Sí, 0 para No): ";
+            std::cin >> urgencia;
+            nuevaUrgencia = (urgencia == 1);
+            std::cin.ignore(); // Limpiar el buffer
+
+            cita.modificarCita(nuevaFecha, nuevaHora, nuevaUrgencia);
+            std::cout << "Cita modificada exitosamente.\n";
+            return;
+        }
+    }
+
+    std::cout << "No se encontró una cita con el ID del paciente especificado.\n";
+}
+
+void eliminarCita() {
+    std::string idPaciente;
+    std::cout << "\n=== Eliminar Cita Médica ===" << std::endl;
+    std::cout << "Ingrese el ID del paciente de la cita a eliminar: ";
+    std::getline(std::cin, idPaciente);
+
+    for (auto it = citasMedicas.begin(); it != citasMedicas.end(); ++it) {
+        if (it->getIdPaciente() == idPaciente) {
+            citasMedicas.erase(it);
+            std::cout << "Cita eliminada exitosamente.\n";
+            return;
+        }
+    }
+
+    std::cout << "No se encontró una cita con el ID del paciente especificado.\n";
+}
 
 
 
@@ -546,6 +683,8 @@ void menuMedicos() {
 void menuPrincipal() {
     cargarDatos(); // esto va a cargar los datos al iniciar el programa
     cargarDatosMedicos(); // esto va a cargar los datos de los medicos
+
+
 
     int opcion;
     do {
