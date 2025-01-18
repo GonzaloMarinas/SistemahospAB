@@ -6,6 +6,7 @@
 #include <cctype>    // lo mismo para std::tolower
 #include "paciente.h"// incluyo paciente
 #include "medico.h" // incluyo medico
+#include "citaMedica.h" // incluyo ya las citas medicas
 
 // con este vector lo que voy a hacer es almacenar los pacientes registrados
 std::vector<paciente> listaPacientes;
@@ -519,7 +520,27 @@ void menuMedicos() {
     } while (opcion != 6);
 }
 
-        
+// GESTIÓN DE CITAS MEDICAS 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // aquí voy a hacer el menú principal
 void menuPrincipal() {
@@ -531,7 +552,7 @@ void menuPrincipal() {
         std::cout << "\nSistema Hospitalario\n";
         std::cout << "1. Gestion de pacientes\n";
         std::cout << "2. Gestion de medicos\n";
-        std::cout << "3. Gestion de citas medicas (Por implementar)\n";
+        std::cout << "3. Gestion de citas medicas\n";
         std::cout << "4. Salir\n";
         std::cout << "Ingrese una opcion: ";
         std::cin >> opcion;
