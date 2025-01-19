@@ -161,6 +161,60 @@ void cargarDatosMedicos() {
 // -----------GESTION DE ARCHIVO DE CITAS MÉDICAS---------
 
 
+void guardarCitas(const std::vector<CitaMedica>& citas) {
+    std::ofstream archivo("citas.txt");
+    if (!archivo) {
+        std::cerr << "Error al abrir el archivo para guardar las citas.\n";
+        return;
+    }
+
+    for (const auto& cita : citas) {
+        archivo << cita.getIdPaciente() << "|" << cita.getIdMedico() << "|"
+            << cita.getEspecialidad() << "|" << cita.getFecha() << "|"
+            << cita.getHora() << "\n";
+    }
+
+    archivo.close();
+    std::cout << "Citas guardadas correctamente.\n";
+}
+
+void cargarCitas(std::vector<CitaMedica>& citas) {
+    std::ifstream archivo("citas.txt");
+    if (!archivo) {
+        std::cerr << "No se encontró un archivo de citas. Se creará uno nuevo al guardar.\n";
+        return;
+    }
+
+    std::string linea;
+    while (std::getline(archivo, linea)) {
+        size_t pos1 = linea.find('|');
+        size_t pos2 = linea.find('|', pos1 + 1);
+        size_t pos3 = linea.find('|', pos2 + 1);
+        size_t pos4 = linea.find('|', pos3 + 1);
+
+        if (pos1 != std::string::npos && pos2 != std::string::npos &&
+            pos3 != std::string::npos && pos4 != std::string::npos) {
+            std::string idPaciente = linea.substr(0, pos1);
+            std::string idMedico = linea.substr(pos1 + 1, pos2 - pos1 - 1);
+            std::string especialidad = linea.substr(pos2 + 1, pos3 - pos2 - 1);
+            std::string fecha = linea.substr(pos3 + 1, pos4 - pos3 - 1);
+            std::string hora = linea.substr(pos4 + 1);
+
+            CitaMedica nuevaCita(idPaciente, idMedico, especialidad, fecha, hora);
+            citas.push_back(nuevaCita);
+        }
+    }
+
+    archivo.close();
+    std::cout << "Citas cargadas correctamente.\n";
+}
+
+
+
+
+
+
+
 
 
 
@@ -577,6 +631,9 @@ void agendarCita(std::vector<CitaMedica>& citas, const std::vector<Medico>& medi
     // Mostrar confirmación
     std::cout << "Cita agendada con exito:\n";
     nuevaCita.mostrarInformacion();
+
+    guardarCitas(citas);
+
 }
 
 
@@ -672,6 +729,10 @@ void menuPrincipal() {
     std::vector<Medico> medicos;
     std::vector<paciente> pacientes;
 
+    cargarCitas(citas);
+
+
+
     int opcion;
     do {
         std::cout << "\nSistema Hospitalario\n";
@@ -697,6 +758,7 @@ void menuPrincipal() {
             std::cout << "Saliendo del programa...\n";
             guardarDatos(); // esto va a guardar los datos al salir del programa
             guardarDatosMedicos(); //guardar los datos de los medicos en mi archivo txt de los medicos
+            guardarCitas(citas);
             break;
         default:
             std::cout << "Opcion no valida. Intente de nuevo.\n";
